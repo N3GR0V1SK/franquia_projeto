@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro Cliente</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="icon" type="image/png" href="../img/icon_user.png">
+    <style>
+        .Titulo {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .w3-button {
+            border: 1px solid #808080;
+        }
+
+        .input-group {
+            display: inline-block;
+            margin-right: 15px;
+            width: calc(100% / 7 - 15px);
+        }
+
+        .w3-input::placeholder {
+            color: #ddd;
+        }
+
+        .tabela {
+            width: 100%;
+            margin-bottom: 60px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body class="w3-pale-yellow">
+
+<!--Titulo-->
+<div class="w3-container w3-card w3-round w3-margin w3-padding w3-orange">
+    <h2 class="w3-center Titulo">Cadastro Cliente</h2>
+
+    <!--Cadastro -->
+    <div class="w3-margin-top w3-padding">
+        <div class="input-group">
+            <label class="w3-text-white" for="nome">Nome</label>
+            <input type="text" id="nome" class="w3-input w3-border" placeholder="Nome">
+        </div>
+        <div class="input-group">
+            <label class="w3-text-white" for="cpf">CPF</label>
+            <input type="text" id="cpf" class="w3-input w3-border" placeholder="CPF">
+        </div>
+        <div class="input-group">
+            <label class="w3-text-white" for="telefone">Telefone</label>
+            <input type="text" id="telefone" class="w3-input w3-border" placeholder="Telefone">
+        </div>
+        <div class="input-group">
+            <label class="w3-text-white" for="email">Email</label>
+            <input type="email" id="email" class="w3-input w3-border" placeholder="Email">
+        </div>
+        <div class="input-group">
+            <label class="w3-text-white" for="logradouro">Logradouro</label>
+            <input type="text" id="logradouro" class="w3-input w3-border" placeholder="Logradouro">
+        </div>
+        <div class="input-group">
+            <label class="w3-text-white" for="numero">Nº</label>
+            <input type="text" id="numero" class="w3-input w3-border" placeholder="Nº">
+        </div>
+        <div class="input-group">
+            <label class="w3-text-white" for="bairro">Bairro</label>
+            <input type="text" id="bairro" class="w3-input w3-border" placeholder="Bairro">
+        </div>
+    </div>
+    
+    <!-- Botão Cadastrar -->
+    <div class="w3-center w3-margin-top">
+        <button class="w3-button w3-orange w3-round w3-text-white" onclick="cadastrarCliente()">Cadastrar</button>
+    </div>
+</div>
+
+<!-- Barra de Pesquisa -->
+<div class="w3-container w3-card w3-round w3-margin w3-padding w3-white">
+    <input type="text" class="w3-input w3-border" id="searchInput" placeholder="Pesquisar cliente..." onkeyup="pesquisarCliente()">
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        carregarClientes();
+    });
+
+    function carregarClientes(term = "") {
+        fetch(`../controller/clientes.php?search=${term}`)
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.getElementById("tableData");
+                tableBody.innerHTML = "";
+                data.forEach(row => {
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `
+                        <td>${row.id}</td>
+                        <td>${row.nome}</td>
+                        <td>${row.cpf}</td>
+                        <td>${row.telefone}</td>
+                        <td>${row.email}</td>
+                        <td>${row.logradouro}</td>
+                        <td>${row.numero}</td>
+                        <td>${row.bairro}</td>
+                        <td><a href="editar/ediCliente.html?id=${row.id}" class="w3-text-orange">Editar</a></td>
+                    `;
+                    tableBody.appendChild(tr);
+                });
+            });
+    }
+
+    function pesquisarCliente() {
+        const searchTerm = document.getElementById("searchInput").value;
+        carregarClientes(searchTerm);
+    }
+</script>
+
+
+<div class="w3-container w3-card w3-round w3-margin w3-padding w3-white tabela">
+    <table class="w3-table w3-bordered w3-white">
+        <thead>
+            <tr class="w3-orange">
+                <th class="w3-text-white">Código</th>
+                <th class="w3-text-white">Nome</th>
+                <th class="w3-text-white">CPF</th>
+                <th class="w3-text-white">Telefone</th>
+                <th class="w3-text-white">Email</th>
+                <th class="w3-text-white">Logradouro</th>
+                <th class="w3-text-white">Nº</th>
+                <th class="w3-text-white">Bairro</th>
+                <th class="w3-text-white">Editar</th>
+            </tr>
+        </thead>
+        <tbody id="tableData">
+            <tr>
+                <td id="codigo">${row.id}</td>
+                <td>${row.nome}</td>
+                <td>${row.cpf}</td>
+                <td>${row.telefone}</td>
+                <td>${row.email}</td>
+                <td>${row.logradouro}</td>
+                <td>${row.numero}</td>
+                <td>${row.bairro}</td>
+                <td><a href="editar/ediCliente.html?id=${row.id}" class="w3-text-orange">X</a></td>
+            </tr>
+        </tbody>
+        
+    </table>
+</div>
+
+<div class="w3-container w3-center w3-margin-top">
+    <a href="../cadastro.html" class="w3-button w3-orange w3-round w3-text-white" style="margin-right: 10px;">Voltar</a>
+</div>
+
+<script>
+    function cadastrarCliente() {
+        const nome = document.getElementById("nome").value;
+        const cpf = document.getElementById("cpf").value;
+        const telefone = document.getElementById("telefone").value;
+        const email = document.getElementById("email").value;
+        const logradouro = document.getElementById("logradouro").value;
+        const numero = document.getElementById("numero").value;
+        const bairro = document.getElementById("bairro").value;
+
+        fetch('../controller/clientes.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nome, cpf, telefone, email, logradouro, numero, bairro })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("Cliente cadastrado com sucesso!");
+                location.reload();
+            } else {
+                alert("Erro ao cadastrar cliente.");
+            }
+        })
+        .catch(error => console.error("Erro:", error));
+    }
+</script>
+
+</body>
+</html>

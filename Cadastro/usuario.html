@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro Usuário</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="icon" type="image/png" href="../img/icon_user.png">
+    <style>
+        .Titulo {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .w3-button {
+            border: 1px solid #808080;
+        }
+
+        .grupo{
+            display: inline-block;
+            margin-right: 15px;
+            width: calc(100% / 5 - 15px);
+        }
+        
+        .w3-input::placeholder {
+            color: #ddd;
+        }
+
+        .tabela {
+            width: 100%;
+            overflow-y: auto;
+            margin-bottom: 70px;
+        }
+
+        .tabela-container {
+            max-height: calc(100vh - 300px);
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body class="w3-pale-yellow">
+
+<!--Titulo-->
+<div class="w3-container w3-card w3-round w3-margin w3-padding w3-orange">
+    <h2 class="w3-center Titulo">Cadastro Usuário</h2>
+
+    <!--Formulário de Cadastro-->
+    <div class="w3-margin-top w3-padding">
+        <div class="input-group">
+            <label class="w3-text-white" for="nome">Nome</label>
+            <input type="text" id="nome" class="w3-input w3-border" placeholder="Nome">
+        </div>
+        <div class="input-group">
+            <label class="w3-text-white" for="login">Login</label>
+            <input type="text" id="login" class="w3-input w3-border" placeholder="Login">
+        </div>
+        <div class="input-group">
+            <label class="w3-text-white" for="senha">Senha</label>
+            <input type="password" id="senha" class="w3-input w3-border" placeholder="Senha">
+        </div>
+        <div class="input-group">
+            <label class="w3-text-white" for="verCadastro">Ver Cadastro (S/N)</label>
+            <select id="verCadastro" class="w3-select w3-border">
+                <option value="S">S</option>
+                <option value="N">N</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <label class="w3-text-white" for="verFinanceiro">Ver Financeiro (S/N)</label>
+            <select id="verFinanceiro" class="w3-select w3-border">
+                <option value="S">S</option>
+                <option value="N">N</option>
+            </select>
+        </div>
+    </div>
+    
+    <!-- Botão Cadastrar -->
+    <div class="w3-center w3-margin-top">
+        <button class="w3-button w3-orange w3-round w3-text-white" onclick="cadastrarUsuario()">Cadastrar</button>
+    </div>
+</div>
+
+<!-- Barra de Pesquisa -->
+<div class="w3-container w3-card w3-round w3-margin w3-padding w3-white">
+    <input type="text" class="w3-input w3-border" id="searchInput" placeholder="Pesquisar usuário..." onkeyup="pesquisarUsuario()">
+</div>
+
+<!--Tabela-->
+<div class="w3-container w3-card w3-round w3-margin w3-padding w3-white tabela tabela-container">
+    <table class="w3-table w3-bordered w3-white">
+        <thead>
+            <tr class="w3-orange">
+                <th class="w3-text-white">Código</th>
+                <th class="w3-text-white">Nome</th>
+                <th class="w3-text-white">Login</th>
+                <th class="w3-text-white">Senha</th>
+                <th class="w3-text-white">Ver Cadastro</th>
+                <th class="w3-text-white">Ver Financeiro</th>
+                <th class="w3-text-white">Editar</th>
+            </tr>
+        </thead>
+        <tbody id="tableData"></tbody>
+    </table>
+</div>
+
+<!-- Botão de Voltar -->
+<div class="w3-container w3-center w3-margin-top">
+    <a href="../cadastro.html" class="w3-button w3-orange w3-round w3-text-white" style="margin-right: 10px;">Voltar</a>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    carregarUsuarios();
+});
+
+function carregarUsuarios(term = "") {
+    fetch(`../controller/usuario.php?search=${term}`)
+        .then(response => response.json())
+        .then(data => {
+            const tableBody = document.getElementById("tableData");
+            tableBody.innerHTML = "";
+            data.forEach(row => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${row.id}</td>
+                    <td>${row.nome}</td>
+                    <td>${row.login}</td>
+                    <td>******</td> <!-- Ocultando a senha -->
+                    <td>${row.verCad}</td>
+                    <td>${row.verFinanc}</td>
+                    <td><a href="editar/ediUsuario.html?id=${row.id}" class="w3-text-orange">Editar</a></td>`;
+                tableBody.appendChild(tr);
+            });
+        });
+}
+
+function pesquisarUsuario() {
+    const searchTerm = document.getElementById("searchInput").value;
+    carregarUsuarios(searchTerm);
+}
+
+function cadastrarUsuario() {
+    const usuario = {
+        nome: document.getElementById("nome").value,
+        login: document.getElementById("login").value,
+        senha: document.getElementById("senha").value,
+        verCad: document.getElementById("verCadastro").value,
+        verFinanc: document.getElementById("verFinanceiro").value
+    };
+
+    fetch('../controller/usuario.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(usuario)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert("Usuário cadastrado com sucesso!");
+            carregarUsuarios();
+        } else {
+            alert("Erro ao cadastrar usuário.");
+        }
+    });
+}
+</script>
+
+</body>
+</html>

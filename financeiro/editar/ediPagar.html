@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Conta a Pagar</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="icon" type="image/png" href="img/icon_user.png">
+    <style>
+        .titulo{
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .w3-button {
+            border: 1px solid #808080; /* Contorno cinza */
+        }
+
+        .grupo{
+            display: inline-block;
+            margin-right: 15px;
+            width: calc(100% / 4 - 15px); /* Distribuir campos igualmente */
+        }
+        
+        .w3-input::placeholder {
+            color: #ddd;
+        }
+    </style>
+</head>
+<body class="w3-pale-yellow">
+
+<!--Titulo -->
+<div class="w3-container w3-card w3-round w3-margin w3-padding w3-orange">
+    <h2 class="w3-center report-title">Editar Conta a Pagar</h2>
+
+    <div class="w3-margin-top w3-padding">
+        <div class="input-group">
+            <label class="w3-text-white" for="codigo">Código</label>
+            <input type="text" id="codigo" class="w3-input w3-border" readonly>
+        </div>
+        <div class="input-group">
+            <label class="w3-text-white" for="descricao">Descrição</label>
+            <input type="text" id="descricao" class="w3-input w3-border" placeholder="Descrição">
+        </div>
+        <div class="input-group">
+            <label class="w3-text-white" for="dataEmissao">Data Emissão</label>
+            <input type="date" id="dataEmissao" class="w3-input w3-border">
+        </div>
+        <div class="input-group">
+            <label class="w3-text-white" for="dataVencimento">Data Vencimento</label>
+            <input type="date" id="dataVencimento" class="w3-input w3-border">
+        </div>
+        <div class="input-group">
+            <label class="w3-text-white" for="valor">Valor</label>
+            <input type="number" id="valor" class="w3-input w3-border" placeholder="Valor">
+        </div>
+        <div class="input-group">
+            <label class="w3-text-white" for="juros">Juros</label>
+            <input type="number" id="juros" class="w3-input w3-border" placeholder="Juros">
+        </div>
+        <div class="input-group">
+            <label class="w3-text-white" for="desconto">Desconto</label>
+            <input type="number" id="desconto" class="w3-input w3-border" placeholder="Desconto">
+        </div>
+    </div>
+    
+    <div class="w3-center w3-margin-top">
+        <button class="w3-button w3-orange w3-round w3-text-white" onclick="atualizarConta()">Atualizar</button>
+        <button class="w3-button w3-orange w3-round w3-text-white" onclick="excluirConta()">Excluir</button>
+    </div>
+</div>
+
+<div style="position: fixed; bottom: 20px; right: 20px;">
+    <a href="../cPagar.html" class="w3-button w3-orange w3-round w3-text-white" style="margin-right: 10px;">Voltar</a>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+    if (id) {
+        fetch(`controller/cPagar.php?id=${id}`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("codigo").value = data.id;
+                document.getElementById("descricao").value = data.descricao;
+                document.getElementById("dataEmissao").value = data.dataEmi;
+                document.getElementById("dataVencimento").value = data.dataVenci;
+                document.getElementById("valor").value = data.valor;
+                document.getElementById("juros").value = data.juros;
+                document.getElementById("desconto").value = data.desconto;
+            });
+    }
+});
+
+function atualizarConta() {
+    const id = document.getElementById("codigo").value;
+    const descricao = document.getElementById("descricao").value;
+    const dataEmi = document.getElementById("dataEmissao").value;
+    const dataVenci = document.getElementById("dataVencimento").value;
+    const valor = document.getElementById("valor").value;
+    const juros = document.getElementById("juros").value;
+    const desconto = document.getElementById("desconto").value;
+
+    fetch(`controller/cPagar.php`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, descricao, dataEmi, dataVenci, valor, juros, desconto })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert("Conta atualizada com sucesso!");
+            window.location.href = "../cPagar.html";
+        } else {
+            alert("Erro ao atualizar conta.");
+        }
+    });
+}
+
+function excluirConta() {
+    const id = document.getElementById("codigo").value;
+    if (confirm("Tem certeza que deseja excluir esta conta?")) {
+        fetch(`controller/cPagar.php?id=${id}`, { method: 'DELETE' })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("Conta excluída com sucesso!");
+                window.location.href = "../cPagar.html";
+            } else {
+                alert("Erro ao excluir conta.");
+            }
+        });
+    }
+}
+</script>
+
+</body>
+</html>

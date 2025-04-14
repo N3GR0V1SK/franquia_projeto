@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caixa</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="icon" type="image/png" href="img/icon_user.png">
+    <style>
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            background-color: #FFA500; /* Fundo laranja */
+            color: white; /* Texto branco */
+        }
+
+        .container h2 {
+            text-align: center;
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .label {
+            flex: 1;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .form-input {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
+
+        #numeroComanda {
+            width: 50px;
+            text-align: center;
+        }
+
+        .form-input input {
+            width: 100%;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .form-input .readonly {
+            background-color: #f0f0f0;
+            color: #555;
+        }
+
+        .table {
+            width: 100%;
+            background-color: white;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+        .table th, .table td {
+            padding: 8px;
+            text-align: center;
+            color: black; /* Cor preta para o texto */
+        }
+
+        .table th {
+            background-color: #FFA500;
+            color: white;
+            font-weight: bold;
+        }
+
+        .button {
+            padding: 8px 16px;
+            background-color: #FFA500; /* Fundo laranja */
+            color: white;
+            border: 1px solid #888888; /* Contorno cinza */
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+
+        .total-finaliza {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .total-finaliza .left-section,
+        .total-finaliza .right-section {
+            display: flex;
+            align-items: center;
+            flex-direction: column; /* Alinha o label acima do campo */
+        }
+
+        .left-section-extended {
+            display: flex;
+            align-items: center;
+            flex-direction: row;
+        }
+
+        .total-finaliza input {
+            width: 100px;
+            padding: 8px;
+            border: 1px solid #888888; /* Contorno cinza */
+            border-radius: 5px;
+            background-color: #f0f0f0;
+            color: #555;
+            text-align: right;
+        }
+
+        .discount-input {
+            width: 100px;
+            padding: 8px;
+            border: 1px solid #888888; /* Contorno cinza */
+            border-radius: 5px;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body class="w3-pale-yellow">
+
+    <div class="w3-container container">
+        <h2 class="w3-center">CAIXA</h2>
+
+    <!-- Codigo do Cliente e Nome do Cliente -->
+    <div class="row">
+        <div class="label" style="flex: 0 0 10%; text-align: left;">Código</div>
+        <div class="label" style="flex: 0 0 90%; text-align: left;">Nome Cliente</div>
+    </div>
+    <div class="row">
+        <div class="form-input" style="flex: 0 0 10%; text-align: left;">
+            <input class="w3-input w3-border" type="text" id="codigoCliente" name="codigoCliente" oninput="buscarCliente()">
+        </div>
+        <div class="form-input" style="flex: 0 0 90%; text-align: left;">
+            <input class="w3-input w3-border" type="text" id="nomeCliente" name="nomeCliente" oninput="buscarCliente()">
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="label">Comanda</div>
+    </div>
+    <div class="row">
+        <div class="form-input">
+            <input class="w3-input w3-border" type="text" id="numeroComanda" name="numeroComanda" maxlength="2" required>
+        </div>
+    </div>
+
+    <!--Títulos dos Campos -->
+    <div class="row">
+        <div class="label" style="flex: 0 0 10%; text-align: left;">Código</div>
+        <div class="label" style="flex: 0 0 50%; text-align: left;">Descrição</div>
+        <div class="label" style="flex: 0 0 20%; text-align: left;">Quantidade</div>
+        <div class="label" style="flex: 0 0 20%; text-align: left;">Total</div>
+    </div>
+
+    <!--Campos -->
+    <div class="row">
+        <!-- Produto -->
+        <div class="form-input" style="flex: 0 0 10%; text-align: left;">
+            <input class="w3-input w3-border" type="text" id="codigoProduto" name="codigoProduto" oninput="buscarProduto()">
+        </div>
+
+        <!--Produto -->
+        <div class="form-input" style="flex: 0 0 50%;">
+            <input class="w3-input w3-border" type="text" id="descricaoProduto" name="descricaoProduto" required oninput="buscarProduto()">
+        </div>
+
+        <!--Qtd -->
+        <div class="form-input" style="flex: 0 0 20%;">
+            <input class="w3-input w3-border" type="number" id="valorUnitario" name="qtd" min="1">
+        </div>
+
+        <!--Valor Total-->
+        <div class="form-input" style="flex: 0 0 20%;">
+            <input class="w3-input w3-border readonly" type="text" id="valorFinal" name="valorFinal" readonly>
+        </div>
+    </div>
+
+    <!--Botão Inserir-->
+    <div class="insert-button">
+        <button class="button" type="button" id="btnInserir">Inserir</button>
+    </div>
+
+    <!--Grid do select-->
+    <table class="w3-table table">
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Descrição</th>
+                <th>Quantidade</th>
+                <th>R$ Unitário</th>
+                <th>R$ Total</th>
+                <th>Usuário</th>
+            </tr>
+        </thead>
+        <tbody id="tableData"></tbody>
+    </table>
+
+    <div class="total-finaliza">
+        <div class="left-section">
+            <div class="left-section-extended">
+                <input type="text" id="idProdutoExcluir" name="idProdutoExcluir" placeholder="Cod Prod">
+                <button class="button" type="button" id="btnExcluir">Excluir</button>
+                <div>
+                    <label for="desconto">Desconto</label>
+                    <input type="number" id="desconto" name="desconto" placeholder="R$" class="discount-input" step="1">
+                </div>
+                <button class="button" type="button" id="btnAplicarDesconto">Aplicar Desconto</button>
+            </div>
+        </div>
+        <div class="total-finaliza">
+        <div class="left-section">
+            <!--Forma de Pagamento-->
+            <label for="formaPagamento">Forma de Pagamento</label>
+            <select id="formaPagamento" name="formaPagamento" class="w3-select w3-border">
+                <option value="Dinheiro">Dinheiro</option>
+                <option value="Debito">Débito</option>
+                <option value="Credito">Crédito</option>
+                <option value="PIX">PIX</option>
+                <option value="Faturado">Faturado</option>
+            </select>
+        </div>
+        <div class="right-section">
+            <label for="totalComanda">Total Comanda</label>
+            <input type="text" id="totalComanda" name="totalComanda" placeholder="R$" readonly>
+            <button class="button" type="button" id="btnFinalizar">Finalizar</button>
+        </div>
+    </div>
+    <div id="senhaModal" class="w3-modal" style="display:none;">
+        <div class="w3-modal-content w3-card-4 w3-animate-top" style="max-width: 400px;">
+            <header class="w3-container w3-orange">
+                <span onclick="document.getElementById('senhaModal').style.display='none'"
+                      class="w3-button w3-display-topright">&times;</span>
+                <h2>Digite sua Senha</h2>
+            </header>
+            <div class="w3-container">
+                <p><input class="w3-input w3-border" type="password" id="senhaUsuario" style="width: 100%;"></p>
+            </div>
+            <footer class="w3-container w3-padding">
+                <button class="w3-button w3-orange w3-block" onclick="enviarSenha()">Confirmar</button>
+            </footer>
+        </div>
+    </div>
+
+<!-- Botão de Voltar -->
+<a href="menu.html" class="w3-button w3-orange w3-round btn-voltar w3-text-white" style="position: fixed; bottom: 20px; right: 20px;">Voltar</a>
+
+
+<script>
+    let actionToValidate = '';
+let numeroComandaGlobal = '';
+let codigoProdutoGlobal = '';
+let descricaoProdutoGlobal = '';
+let quantidadeGlobal = '';
+let descontoGlobal = 0;
+let totalComandaGlobal = 0;
+let formaPagamentoGlobal = '';
+let codigoClienteGlobal = '';
+
+    document.getElementById('numeroComanda').addEventListener('change', function () {
+        const comanda = this.value;
+    
+        if (comanda) {
+            fetch(`controller/caixa.php?comanda=${comanda}`)
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById('tableData');
+                    tableBody.innerHTML = "";
+    
+                    if (data.length && data[0] !== "X") {
+                        data.forEach(item => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${item.codigo}</td>
+                                <td>${item.descricao}</td>
+                                <td>${item.quantidade}</td>
+                                <td>R$ ${parseFloat(item.valorUnitario).toFixed(2)}</td>
+                                <td>R$ ${parseFloat(item.valorTotal).toFixed(2)}</td>
+                                <td>${item.idUsu}</td>
+                            `;
+                            tableBody.appendChild(row);
+                        });
+                    } else {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `<td colspan="5" style="text-align: center;">X</td>`;
+                        tableBody.appendChild(row);
+                    }
+                })
+                .catch(error => console.error('Erro ao buscar dados:', error));
+        }
+    });
+    
+    document.getElementById('btnInserir').addEventListener('click', function () {
+    numeroComandaGlobal = document.getElementById('numeroComanda').value;
+    codigoProdutoGlobal = document.getElementById('codigoProduto').value;
+    descricaoProdutoGlobal = document.getElementById('descricaoProduto').value;
+    quantidadeGlobal = document.getElementById('valorUnitario').value;
+
+    if (numeroComandaGlobal && (codigoProdutoGlobal || descricaoProdutoGlobal) && quantidadeGlobal) {
+        validarPermissao('insert');
+    } else {
+        alert('Preencha todos os campos obrigatórios.');
+    }
+});
+
+
+
+document.getElementById('btnExcluir').addEventListener('click', function () {
+    const numeroComanda = document.getElementById('numeroComanda').value;
+    const idProdutoExcluir = document.getElementById('idProdutoExcluir').value;
+
+    if (numeroComanda && idProdutoExcluir) {
+        const formData = new FormData();
+        formData.append('action', 'delete');
+        formData.append('numeroComanda', numeroComanda);
+        formData.append('idProdutoExcluir', idProdutoExcluir);
+
+        fetch('controller/caixa.php', {
+            method: 'POST',
+            body: formData,
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.success);
+                    updateTable(numeroComanda); // Atualiza a tabela após exclusão
+                } else {
+                    alert(data.error || 'Erro ao excluir produto.');
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao excluir:', error);
+                alert('Erro ao conectar ao servidor.');
+            });
+    } else {
+        alert('Preencha todos os campos obrigatórios para exclusão.');
+    }
+});
+
+document.getElementById('numeroComanda').addEventListener('change', function () {
+    const numeroComanda = this.value;
+    if (numeroComanda) {
+        updateTable(numeroComanda);
+    }
+});
+
+
+function updateTable(numeroComanda) {
+    fetch(`controller/caixa.php?comanda=${numeroComanda}`)
+        .then(response => response.json())
+        .then(data => {
+            const tableBody = document.getElementById('tableData');
+            tableBody.innerHTML = '';
+            let totalComanda = 0;
+
+            if (data.length && data[0] !== "X") {
+                data.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${item.codigo}</td>
+                        <td>${item.descricao}</td>
+                        <td>${item.quantidade}</td>
+                        <td>R$ ${parseFloat(item.valorUnitario).toFixed(2)}</td>
+                        <td>R$ ${parseFloat(item.valorTotal).toFixed(2)}</td>
+                        <td>${item.nome}</td>
+                    `;
+                    tableBody.appendChild(row);
+                    totalComanda += parseFloat(item.valorTotal);
+                });
+            } else {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td colspan="6" style="text-align: center;">X</td>`;
+                tableBody.appendChild(row);
+            }
+
+            document.getElementById('totalComanda').value = `R$ ${totalComanda.toFixed(2)}`;
+        })
+        .catch(error => {
+            console.error('Erro ao atualizar a tabela:', error);
+        });
+}
+
+
+document.getElementById('btnAplicarDesconto').addEventListener('click', function () {
+    const descontoElement = document.getElementById('desconto');
+    const desconto = parseFloat(descontoElement.value);
+    const totalComandaElement = document.getElementById('totalComanda');
+    let totalComanda = parseFloat(totalComandaElement.value.replace('R$', '').trim());
+
+    if (!isNaN(desconto) && desconto > 0 && totalComanda > 0) {
+        const novoTotal = totalComanda - desconto;
+
+        if (novoTotal < 0) {
+            totalComandaElement.value = `R$ 0.00`;
+            totalComandaElement.value = `R$ ${novoTotal.toFixed(2)}`;
+        }
+
+        descontoElement.disabled = true;
+        this.disabled = true;
+    } else {
+        alert('Por favor, insira um valor válido de desconto.');
+    }
+});
+document.getElementById('btnFinalizar').addEventListener('click', function () {
+    numeroComandaGlobal = document.getElementById('numeroComanda').value;
+    descontoGlobal = parseFloat(document.getElementById('desconto').value) || 0;
+    totalComandaGlobal = parseFloat(document.getElementById('totalComanda').value.replace('R$', '').trim());
+    formaPagamentoGlobal = document.getElementById('formaPagamento').value;
+    codigoClienteGlobal = document.getElementById('codigoCliente').value;
+
+    if (numeroComandaGlobal && totalComandaGlobal > 0) {
+        validarPermissao('finalize');
+    } else {
+        alert('Preencha todos os campos obrigatórios para finalizar a comanda.');
+    }
+});
+
+    function buscarCliente() {
+        const codigoCliente = document.getElementById('codigoCliente').value;
+        const nomeCliente = document.getElementById('nomeCliente').value;
+
+        if (codigoCliente || nomeCliente) {
+            fetch(`controller/caixa.php?action=buscarCliente&codigoCliente=${codigoCliente}&nomeCliente=${nomeCliente}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        if (data.codigo) {
+                            document.getElementById('codigoCliente').value = data.codigo;
+                        }
+                        if (data.nome) {
+                            document.getElementById('nomeCliente').value = data.nome;
+                        }
+                    } else {
+                        console.error('Cliente não encontrado.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao buscar cliente:', error);
+                });
+        }
+    }
+    function buscarProduto() {
+        const codigoProduto = document.getElementById('codigoProduto').value;
+        const descricaoProduto = document.getElementById('descricaoProduto').value;
+
+        if (codigoProduto || descricaoProduto) {
+            fetch(`controller/caixa.php?action=buscarProduto&codigoProduto=${codigoProduto}&descricaoProduto=${descricaoProduto}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        if (data.codigo) {
+                            document.getElementById('codigoProduto').value = data.codigo;
+                        }
+                        if (data.descricao) {
+                            document.getElementById('descricaoProduto').value = data.descricao;
+                        }
+                        if (data.valorUnitario) {
+                            document.getElementById('valorUnitario').value = data.valorUnitario;
+                        }
+                    } else {
+                        console.error('Produto não encontrado.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao buscar produto:', error);
+                });
+        }
+    }
+    document.getElementById('codigoProduto').addEventListener('input', buscarProduto);
+    document.getElementById('descricaoProduto').addEventListener('input', buscarProduto);
+    document.getElementById('valorUnitario').addEventListener('input', function () {
+        const valor = parseFloat(this.value);
+        if (valor < 1) {
+            alert('O valor unitário não pode ser zero ou negativo.');
+            this.value = '';
+        }
+    });
+    function validarPermissao(action) {
+    actionToValidate = action;
+    document.getElementById('senhaModal').style.display = 'block';
+}
+
+function enviarSenha() {
+    const senhaUsuario = document.getElementById('senhaUsuario').value;
+
+    if (senhaUsuario) {
+        const formData = new FormData();
+        formData.append('action', actionToValidate);
+        formData.append('senhaUsuario', senhaUsuario);
+
+        if (actionToValidate === 'insert') {
+            formData.append('numeroComanda', numeroComandaGlobal);
+            formData.append('codigoProduto', codigoProdutoGlobal);
+            formData.append('descricaoProduto', descricaoProdutoGlobal);
+            formData.append('quantidade', quantidadeGlobal);
+        } else if (actionToValidate === 'finalize') {
+            formData.append('numeroComanda', numeroComandaGlobal);
+            formData.append('desconto', descontoGlobal);
+            formData.append('totalComanda', totalComandaGlobal);
+            formData.append('formaPagamento', formaPagamentoGlobal);
+            formData.append('codigoCliente', codigoClienteGlobal);
+        }
+
+        fetch('controller/caixa.php', {
+            method: 'POST',
+            body: formData,
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.success);
+                    if (actionToValidate === 'insert') {
+                        updateTable(numeroComandaGlobal);
+                    } else if (actionToValidate === 'finalize') {
+                        location.reload();
+                    }
+                } else {
+                    alert(data.error || 'Erro ao validar a operação.');
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao validar a operação:', error);
+                alert('Erro ao conectar ao servidor.');
+            })
+            .finally(() => {
+                document.getElementById('senhaModal').style.display = 'none';
+                document.getElementById('senhaUsuario').value = '';
+            });
+    } else {
+        alert('Senha não fornecida. Operação cancelada.');
+    }
+}
+
+</script>
+    
+</body>
+</html>

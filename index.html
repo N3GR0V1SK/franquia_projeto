@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+    <link rel="icon" type="image/png" href="img/icon_user.png">
+</head>
+<body class="w3-pale-yellow">
+
+<div class="w3-container w3-display-middle" style="width: 600px;">
+    <div class="w3-card-4 w3-light-grey">
+        <div class="w3-container w3-orange w3-text-white">        
+            <h2>Login</h2>
+        </div>
+        <form class="w3-container" action="controller/login.php" method="post">
+            <p style="height: 100px;">
+                <label for="username">Usuário</label>
+                <input class="w3-input w3-border" type="text" id="username" name="username" required>
+            </p>
+            <p style="height: 100px;">
+                <label for="password">Senha</label>
+                <input class="w3-input w3-border" type="password" id="password" name="password" required>
+            </p>
+            <p>
+                <button class="w3-button w3-orange w3-block w3-text-white" type="submit">Entrar</button>
+            </p>
+        </form>        
+    </div>
+</div>
+</body>
+</html>

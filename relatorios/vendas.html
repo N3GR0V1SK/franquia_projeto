@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendas</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="icon" type="image/png" href="../img/icon_user.png">
+    <style>
+        .titulo{
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .data-table th {
+            background-color: #FFA500;
+            color: white;
+        }
+        th {
+            color: white;
+        }
+    </style>
+</head>
+<body class="w3-pale-yellow">
+
+<div class="w3-container w3-card w3-round w3-margin w3-padding w3-orange">
+    <h2 class="w3-center titulow3-text-white">Vendas</h2>
+
+    <table class="w3-table w3-bordered w3-white w3-margin-top">
+        <thead>
+            <tr class="w3-orange">
+                <th>Código</th>
+                <th>Data</th>
+                <th>Hora</th>
+                <th>Desconto</th>
+                <th>Total</th>
+                <th>Usuário</th>
+                <th>Cliente</th>
+                <th>Fpgto</th>
+                <th>Itens</th>
+            </tr>
+        </thead>
+        <tbody id="tableData"></tbody>
+    </table>
+</div>
+
+<div class="w3-container w3-center w3-margin-top">
+    <a href="../relatorio.html" class="w3-button w3-orange w3-round w3-text-white" style="margin-right: 10px;">Voltar</a>
+    <button onclick="window.print()" class="w3-button w3-orange w3-round w3-text-white">Imprimir</button>
+</div>
+
+<script>
+function loadTableData() {
+    fetch('../controller/relVendas.php?tipo=vendas')
+        .then(response => response.json())
+        .then(data => {
+            const tableBody = document.getElementById("tableData");
+            tableBody.innerHTML = "";
+
+            data.forEach(item => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${item.id}</td>
+                    <td>${item.data}</td>
+                    <td>${item.hora}</td>
+                    <td>R$ ${parseFloat(item.desconto).toFixed(2)}</td>
+                    <td>R$ ${parseFloat(item.total).toFixed(2)}</td>
+                    <td>${item.usuario}</td>
+                    <td>${item.cliente}</td>
+                    <td>${item.fpgto}</td>
+                    <td><a href="Itens.html?id=${item.id}">Consultar</a></td>
+                `;
+                tableBody.appendChild(row);
+            });
+        })
+        .catch(error => console.error('Erro ao carregar dados:', error));
+}
+loadTableData();
+</script>
+
+</body>
+</html>

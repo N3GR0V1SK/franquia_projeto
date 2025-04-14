@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tela de Cadastro</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="icon" type="image/png" href="img/icon_user.png">
+    <style>
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+      .layout {
+            display: grid;
+            grid-template-areas: 
+                "produto cliente"
+                "usuario usuario";
+            grid-gap: 20px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .produto { grid-area: produto; }
+        .cliente { grid-area: cliente; }
+        .usuario { grid-area: usuario; }
+
+        .menu {
+            text-align: center;
+        }
+
+        .menu img {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body class="w3-pale-yellow">
+
+<div class="container">
+    <h2 class="w3-center w3-text-dark-gray">Menu Cadastro</h2>
+    <div class="layout">
+        <div class="w3-card w3-hover-shadow w3-padding w3-round w3-light-gray menu produto">
+            <a href="Cadastro/produtos.html" class="w3-button w3-block w3-white">
+                <img src="img/icon_produt.png" style="width: 90%; height: 90%;" alt="Cadastro de Produto">
+                <p>Cadastro de Produtos</p>
+            </a>
+        </div>
+
+        <!--Clientes-->
+        <div class="w3-card w3-hover-shadow w3-padding w3-round w3-light-gray menu cliente">
+            <a href="Cadastro/clientes.html" class="w3-button w3-block w3-white">
+                <img src="img/icon_cli.png" style="width: 90%; height: 90%;" alt="Cadastro de Cliente">
+                <p>Cadastro de Clientes</p>
+            </a>
+        </div>
+
+        <!--Usuários-->
+        <div class="w3-card w3-hover-shadow w3-padding w3-round w3-light-gray menu usuario">
+            <a href="Cadastro/usuario.html" class="w3-button w3-block w3-white">
+                <img src="img/icon_user.png" style="width: 35%; height: 35%;" alt="Cadastro de Usuário">
+                <p>Cadastro de Usuários</p>
+            </a>
+        </div>
+    </div>
+    <a href="menu.html" class="w3-button w3-orange w3-round btn-voltar w3-text-white" style=" position: fixed; bottom: 20px; right: 20px;">Voltar</a>
+</div>
+
+</body>
+</html>

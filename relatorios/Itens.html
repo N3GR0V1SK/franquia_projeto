@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Itens da Venda</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="icon" type="image/png" href="../img/icon_user.png">
+    <style>
+        .titulo{
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        .data-table th {
+            background-color: #FFA500;
+            color: white;
+        }
+    </style>
+</head>
+<body class="w3-pale-yellow">
+
+<div class="w3-container w3-card w3-round w3-margin w3-padding w3-orange">
+    <h2 class="w3-center titulow3-text-white">Itens da Venda</h2>
+
+    <table class="w3-table w3-bordered w3-white w3-margin-top">
+        <thead>
+            <tr class="w3-orange w3-text-white">
+                <th>Código</th>
+                <th>Venda</th>
+                <th>Produto</th>
+                <th>Valor Unitário</th>
+                <th>Quantidade</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody id="tableData"></tbody>
+    </table>
+</div>
+
+<div class="w3-container w3-center w3-margin-top">
+    <a href="vendas.html" class="w3-button w3-orange w3-round w3-text-white" style="margin-right: 10px;">Voltar</a>
+    <button onclick="window.print()" class="w3-button w3-orange w3-round w3-text-white">Imprimir</button>
+</div>
+
+<script>
+function getVendaIdFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('id');
+}
+
+function loadTableData() {
+    const vendaId = getVendaIdFromUrl();
+    if (!vendaId) {
+        console.error("ID da venda não encontrado na URL.");
+        return;
+    }
+
+    fetch(`../controller/relVendas.php?idcaixa=${vendaId}`)
+        .then(response => response.json())
+        .then(data => {
+            const tableBody = document.getElementById("tableData");
+            tableBody.innerHTML = "";
+
+            data.forEach(item => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${item.id}</td>
+                    <td>${item.idcaixa}</td>
+                    <td>${item.descricao}</td>
+                    <td>R$ ${parseFloat(item.val_unitario).toFixed(2)}</td>
+                    <td>${item.qtd}</td>
+                    <td>R$ ${parseFloat(item.total).toFixed(2)}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        })
+        .catch(error => console.error('Erro ao carregar dados:', error));
+}
+
+loadTableData();
+</script>
+
+</body>
+</html>

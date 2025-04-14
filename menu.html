@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Principal</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+    <link rel="icon" type="image/png" href="img/icon_user.png">
+    <style>
+        .menu {
+            text-align: center;
+            margin: 20px;
+        }
+        .menu img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+        }
+        .menu p {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body class="w3-pale-yellow">
+
+<div class="w3-container w3-display-middle" style="width: 500px;">
+    <div class="w3-card-4  w3-light-grey">
+        <div class="w3-container w3-orange w3-text-white">
+            <h2>Menu Principal</h2>
+        </div>
+        
+        <div class="w3-container">
+            <div class="menu">
+                <a href="cadastro.html">
+                    <img src="img/Icon_cad.png" style="width: 35%; height: 35%;" alt="Cadastro">
+                    <p>Cadastro</p>
+                </a>
+            </div>
+            
+            <div class="menu">
+                <a href="financeiro.html">
+                    <img src="img/Icon_fin.png" style="width: 45%; height: 45%;" alt="Financeiro">
+                    <p>Financeiro</p>
+                </a>
+            </div>
+            
+            <div class="menu">
+                <a href="caixa.html">
+                    <img src="img/Icon_caixa.png" style="width: 40%; height: 40%;" alt="Caixa">
+                    <p>Caixa</p>
+                </a>
+            </div>
+
+            <div class="menu">
+                <a href="relatorio.html">
+                    <img src="img/Icon_rel.png" style="width: 45%; height: 45%;" alt="Relatorios">
+                    <p>Relatórios</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<a href="index.html" class="w3-button w3-orange w3-round btn-voltar w3-text-white" style="position: fixed; bottom: 20px; right: 20px;">Sair</a>
+<div id="senhaModal" class="w3-modal" style="display:none;">
+    <div class="w3-modal-content w3-card-4 w3-animate-top" style="max-width: 400px;">
+        <header class="w3-container w3-orange">
+            <span onclick="document.getElementById('senhaModal').style.display='none'"
+                  class="w3-button w3-display-topright">&times;</span>
+            <h2>Digite sua Senha</h2>
+        </header>
+        <div class="w3-container">
+            <p><input class="w3-input w3-border" type="password" id="senhaUsuario" placeholder="Senha"></p>
+        </div>
+        <footer class="w3-container w3-padding">
+            <button class="w3-button w3-orange w3-block" onclick="enviarSenha()">Confirmar</button>
+        </footer>
+    </div>
+</div>
+
+<script>
+let actionToValidate = '';
+
+function validarPermissao(action) {
+    actionToValidate = action;
+    document.getElementById('senhaModal').style.display = 'block';
+}
+
+function enviarSenha() {
+    const senhaUsuario = document.getElementById('senhaUsuario').value;
+
+    if (senhaUsuario) {
+        const formData = new FormData();
+        formData.append('action', actionToValidate);
+        formData.append('senhaUsuario', senhaUsuario);
+
+        fetch('controller/permissao.php', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Redireciona para a página correspondente se tiver permissão
+                    if (actionToValidate === 'acessarCadastro') {
+                        window.location.href = 'cadastro.html';
+                    } else if (actionToValidate === 'acessarFinanceiro') {
+                        window.location.href = 'financeiro.html';
+                    } else if (actionToValidate === 'acessarRelatorio') {
+                        window.location.href = 'relatorio.html';
+                    }
+                } else {
+                    alert(data.error || 'Erro ao validar permissão.');
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao validar permissão:', error);
+                alert('Erro ao conectar ao servidor.');
+            })
+            .finally(() => {
+                document.getElementById('senhaModal').style.display = 'none';
+                document.getElementById('senhaUsuario').value = ''; // Limpa o campo de senha
+            });
+    } else {
+        alert('Senha não fornecida. Operação cancelada.');
+    }
+}
+
+document.querySelector('a[href="cadastro.html"]').addEventListener('click', function (event) {
+    event.preventDefault();
+    validarPermissao('acessarCadastro');
+});
+
+document.querySelector('a[href="financeiro.html"]').addEventListener('click', function (event) {
+    event.preventDefault();
+    validarPermissao('acessarFinanceiro');
+});
+
+document.querySelector('a[href="relatorio.html"]').addEventListener('click', function (event) {
+    event.preventDefault();
+    validarPermissao('acessarRelatorio');
+});
+</script>
+
+</body>
+</html>

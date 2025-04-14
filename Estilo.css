@@ -1,0 +1,40 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Rubik+Dirt&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+
+    .font-tit{
+            font-family: "Press Start 2P", serif;
+            font-weight: 400;
+            font-style: normal;
+    }
+
+    .font-corp{
+        font-family: "IBM Plex Mono", serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 13px;
+    }
+
+    /* Create three equal columns that floats next to each other */
+.column {
+    float: left;
+    width: 25%;
+    padding: 15px;
+  }
+  
+  /* Clear floats after the columns */
+  .row::after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+  .bar{
+    flex-direction: top;
+    background-color: #fffb00;
+    border-bottom: 5px solid #ff9800;
+    width: 20px;
+}
+
+.icone-atl{
+    width: 40%
+}

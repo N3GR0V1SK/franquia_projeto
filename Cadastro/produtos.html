@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro Produto</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="icon" type="image/png" href="../img/icon_user.png">
+    <style>
+        .Titulo {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .w3-button {
+            border: 1px solid #808080;
+        }
+
+        .grupo{
+            display: inline-block;
+            margin-right: 15px;
+            width: calc(100% / 3 - 15px);
+        }
+        
+        .w3-input::placeholder {
+            color: #ddd;
+        }
+
+        .tabela {
+            width: 100%;
+            overflow-y: auto;
+            margin-bottom: 70px;
+        }
+
+        .tabela-container {
+            max-height: calc(100vh - 300px); /* Ajusta para manter espaço para outros elementos */
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body class="w3-pale-yellow">
+
+<!--Título-->
+<div class="w3-container w3-card w3-round w3-margin w3-padding w3-orange">
+    <h2 class="w3-center Titulo">Cadastro Produto</h2>
+
+    <!-- Formulário de Cadastro -->
+    <div class="w3-margin-top w3-padding">
+        <div class="input-group">
+            <label class="w3-text-white" for="descricao">Descrição</label>
+            <input type="text" id="descricao" class="w3-input w3-border" placeholder="Descrição">
+        </div>
+        <div class="input-group">
+            <label class="w3-text-white" for="quantidade">Quantidade Estoque</label>
+            <input type="number" id="quantidade" class="w3-input w3-border" placeholder="Qtd Estoque">
+        </div>
+        <div class="input-group">
+            <label class="w3-text-white" for="preco">Preço</label>
+            <input type="text" id="preco" class="w3-input w3-border" placeholder="Preço">
+        </div>
+    </div>
+    
+    <!-- Botão Cadastrar -->
+    <div class="w3-center w3-margin-top">
+        <button class="w3-button w3-orange w3-round w3-text-white" onclick="cadastrarProduto()">Cadastrar</button>
+    </div>
+</div>
+
+<!-- Barra de Pesquisa -->
+<div class="w3-container w3-card w3-round w3-margin w3-padding w3-white">
+    <input type="text" class="w3-input w3-border" id="searchInput" placeholder="Pesquisar produto..." onkeyup="pesquisarProduto()">
+</div>
+
+<!--Tabela -->
+<div class="w3-container w3-card w3-round w3-margin w3-padding w3-white tabela tabela-container">
+    <table class="w3-table w3-bordered w3-white">
+        <thead>
+            <tr class="w3-orange">
+                <th class="w3-text-white">Código</th>
+                <th class="w3-text-white">Descrição</th>
+                <th class="w3-text-white">Qtd Estoque</th>
+                <th class="w3-text-white">Preço</th>
+                <th class="w3-text-white">Editar</th>
+            </tr>
+        </thead>
+        <tbody id="tableData"></tbody>
+    </table>
+</div>
+
+<!-- Botão de Voltar -->
+<div class="w3-container w3-center w3-margin-top">
+    <a href="../cadastro.html" class="w3-button w3-orange w3-round w3-text-white" style="margin-right: 10px;">Voltar</a>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        carregarProdutos();
+    });
+
+    function carregarProdutos(term = "") {
+        fetch(`../controller/produtos.php?search=${term}`)
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.getElementById("tableData");
+                tableBody.innerHTML = "";
+                data.forEach(row => {
+                    const preco = parseFloat(row.preco) || 0;
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `
+                        <td>${row.id}</td>
+                        <td>${row.descricao}</td>
+                        <td>${row.qtdEstoque}</td>
+                        <td>R$ ${preco.toFixed(2)}</td>
+                        <td><a href="editar/ediProduto.html?id=${row.id}" class="w3-text-orange">Editar</a></td>
+
+                    `;
+                    tableBody.appendChild(tr);
+                });
+            });
+    }
+
+    function pesquisarProduto() {
+        const searchTerm = document.getElementById("searchInput").value;
+        carregarProdutos(searchTerm);
+    }
+
+    function cadastrarProduto() {
+        const produto = {
+            descricao: document.getElementById("descricao").value,
+            qtdEstoque: document.getElementById("quantidade").value,
+            preco: document.getElementById("preco").value
+        };
+
+        fetch('../controller/produtos.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(produto)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("Produto cadastrado com sucesso!");
+                carregarProdutos();
+            } else {
+                alert("Erro ao cadastrar produto.");
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

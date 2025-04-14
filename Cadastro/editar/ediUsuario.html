@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Usuário</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="icon" type="image/png" href="img/icon_user.png">
+    <style>
+        .titulo {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .w3-button {
+            border: 1px solid #808080;
+        }
+
+        .grupo {
+            display: inline-block;
+            margin-right: 15px;
+            width: calc(100% / 5 - 15px);
+        }
+        
+        .w3-input::placeholder {
+            color: #ddd;
+        }
+    </style>
+</head>
+<body class="w3-pale-yellow">
+
+<!-- Título -->
+<div class="w3-container w3-card w3-round w3-margin w3-padding w3-orange">
+    <h2 class="w3-center titulo">Editar Usuário</h2>
+
+    <!--Formulário-->
+    <div class="w3-margin-top w3-padding">
+        <div class="grupo">
+            <label class="w3-text-white" for="codigo">Código</label>
+            <input type="text" id="codigo" class="w3-input w3-border" readonly>
+        </div>
+        <div class="grupo">
+            <label class="w3-text-white" for="nome">Nome</label>
+            <input type="text" id="nome" class="w3-input w3-border" placeholder="Nome">
+        </div>
+        <div class="grupo">
+            <label class="w3-text-white" for="login">Login</label>
+            <input type="text" id="login" class="w3-input w3-border" placeholder="Login">
+        </div>
+        <div class="grupo">
+            <label class="w3-text-white" for="senha">Senha</label>
+            <input type="password" id="senha" class="w3-input w3-border" placeholder="Senha">
+        </div>
+        <div class="grupo">
+            <label class="w3-text-white" for="verCadastro">Ver Cadastro (S/N)</label>
+            <select id="verCadastro" class="w3-select w3-border">
+                <option value="S">S</option>
+                <option value="N">N</option>
+            </select>
+        </div>
+        <div class="grupo">
+            <label class="w3-text-white" for="verFinanceiro">Ver Financeiro (S/N)</label>
+            <select id="verFinanceiro" class="w3-select w3-border">
+                <option value="S">S</option>
+                <option value="N">N</option>
+            </select>
+        </div>
+    </div>
+    
+    <!-- Botões Atualizar e Excluir -->
+    <div class="w3-center w3-margin-top">
+        <button class="w3-button w3-orange w3-round w3-text-white" onclick="atualizarUsuario()">Atualizar</button>
+        <button class="w3-button w3-orange w3-round w3-text-white" onclick="excluirUsuario()">Excluir</button>
+    </div>
+</div>
+
+<!-- Botão de Voltar -->
+<div style="position: fixed; bottom: 20px; right: 20px;">
+    <a href="../usuario.html" class="w3-button w3-orange w3-round w3-text-white" style="margin-right: 10px;">Voltar</a>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+    if (id) {
+        fetch(`controller/usuario.php?id=${id}`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("codigo").value = data.id;
+                document.getElementById("nome").value = data.nome;
+                document.getElementById("login").value = data.login;
+                document.getElementById("verCadastro").value = data.verCad;
+                document.getElementById("verFinanceiro").value = data.verFinanc;
+            });
+    }
+});
+
+function atualizarUsuario() {
+    const id = document.getElementById("codigo").value;
+    const nome = document.getElementById("nome").value;
+    const login = document.getElementById("login").value;
+    const senha = document.getElementById("senha").value;
+    const verCad = document.getElementById("verCadastro").value;
+    const verFinanc = document.getElementById("verFinanceiro").value;
+
+    fetch(`controller/usuario.php`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, nome, login, senha, verCad, verFinanc })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert("Usuário atualizado com sucesso!");
+            window.location.href = "../usuario.html";
+        } else {
+            alert("Erro ao atualizar usuário.");
+        }
+    });
+}
+
+function excluirUsuario() {
+    const id = document.getElementById("codigo").value;
+    if (confirm("Tem certeza que deseja excluir este usuário?")) {
+        fetch(`controller/usuario.php?id=${id}`, { method: 'DELETE' })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("Usuário excluído com sucesso!");
+                window.location.href = "../usuario.html";
+            } else {
+                alert("Erro ao excluir usuário.");
+            }
+        });
+    }
+}
+</script>
+
+</body>
+</html>

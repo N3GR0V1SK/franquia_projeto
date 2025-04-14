@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contas a Receber</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="icon" type="image/png" href="../img/icon_user.png">
+    <style>
+        .titulo {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .w3-button {
+            border: 1px solid #808080;  
+        }
+
+        .grupo {
+            display: inline-block;
+            margin-right: 15px;
+            width: calc(100% / 7 - 15px); 
+        }
+        
+        .w3-input::placeholder {
+            color: #ddd; /* Placeholder cinza claro */
+        }
+
+        .tabela {
+            width: 100%;
+            max-height: 300px; /* Altura máxima com rolagem para muitos registros */
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body class="w3-pale-yellow">
+
+ <!--Titulo-->
+<div class="w3-container w3-card w3-round w3-margin w3-padding w3-orange">
+    <h2 class="w3-center titulo">Contas a Receber</h2>
+
+    <!-- Formulário Nova Conta-->
+    <div class="w3-margin-top w3-padding">
+        <div class="grupo">
+            <label class="w3-text-white" for="descricao">Descrição</label>
+            <input type="text" id="descricao" class="w3-input w3-border" placeholder="Descrição">
+        </div>
+        <div class="grupo">
+            <label class="w3-text-white" for="dataEmissao">Data Emissão</label>
+            <input type="date" id="dataEmissao" class="w3-input w3-border">
+        </div>
+        <div class="grupo">
+            <label class="w3-text-white" for="dataVencimento">Data Vencimento</label>
+            <input type="date" id="dataVencimento" class="w3-input w3-border">
+        </div>
+        <div class="grupo">
+            <label class="w3-text-white" for="valor">Valor</label>
+            <input type="number" id="valor" class="w3-input w3-border" placeholder="Valor">
+        </div>
+        <div class="grupo">
+            <label class="w3-text-white" for="juros">Juros</label>
+            <input type="number" id="juros" class="w3-input w3-border" placeholder="Juros">
+        </div>
+        <div class="grupo">
+            <label class="w3-text-white" for="desconto">Desconto</label>
+            <input type="number" id="desconto" class="w3-input w3-border" placeholder="Desconto">
+        </div>
+        <div class="grupo">
+            <button class="w3-button w3-orange w3-round w3-text-white w3-margin-top" onclick="cadastrarConta()">Cadastrar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Barra de Pesquisa -->
+<div class="w3-container w3-card w3-round w3-margin w3-padding w3-white">
+    <input type="text" class="w3-input w3-border" id="searchInput" placeholder="Pesquisar conta..." onkeyup="pesquisarConta()">
+</div>
+
+<!--Tabela-->
+<div class="w3-container w3-card w3-round w3-margin w3-padding w3-white tabela">
+    <table class="w3-table w3-bordered w3-white">
+        <thead>
+            <tr class="w3-orange">
+                <th class="w3-text-white">Código</th>
+                <th class="w3-text-white">Descrição</th>
+                <th class="w3-text-white">Data Emissão</th>
+                <th class="w3-text-white">Data Vencimento</th>
+                <th class="w3-text-white">Baixado</th>
+                <th class="w3-text-white">Valor</th>
+                <th class="w3-text-white">Juros</th>
+                <th class="w3-text-white">Desconto</th>
+                <th class="w3-text-white">Baixar</th>
+                <th class="w3-text-white">Editar</th>
+            </tr>
+        </thead>
+        <tbody id="tableData"></tbody>
+    </table>
+</div>
+
+<!-- Botão de Voltar -->
+<div class="w3-container w3-center w3-margin-top">
+    <a href="../financeiro.html" class="w3-button w3-orange w3-round w3-text-white" style="margin-right: 10px;">Voltar</a>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    carregarContas();
+});
+
+function carregarContas(term = "") {
+    fetch(`../controller/cReceber.php?search=${term}`)
+        .then(response => response.json())
+        .then(data => {
+            const tableBody = document.getElementById("tableData");
+            tableBody.innerHTML = "";
+            data.forEach(row => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${row.id}</td>
+                    <td>${row.descricao}</td>
+                    <td>${row.dataEmi}</td>
+                    <td>${row.dataVenci}</td>
+                    <td>${row.baixa}</td>
+                    <td>${row.valor}</td>
+                    <td>${row.juros}</td>
+                    <td>${row.desconto}</td>
+                    <td><button class="w3-text-orange" onclick="baixarConta(${row.id})">Baixar</button></td>
+                    <td><a href="editar/ediReceber.html?id=${row.id}" class="w3-text-orange">Editar</a></td>
+                `;
+                tableBody.appendChild(tr);
+            });
+        });
+}
+
+function baixarConta(id) {
+    fetch(`../controller/cReceber.php`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, baixa: 'S' })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert("Conta baixada com sucesso!");
+            carregarContas();
+        } else {
+            alert("Erro ao baixar a conta.");
+        }
+    });
+}
+
+function pesquisarConta() {
+    const searchTerm = document.getElementById("searchInput").value;
+    carregarContas(searchTerm);
+}
+
+function cadastrarConta() {
+    const conta = {
+        descricao: document.getElementById("descricao").value,
+        dataEmi: document.getElementById("dataEmissao").value,
+        dataVenci: document.getElementById("dataVencimento").value,
+        valor: document.getElementById("valor").value,
+        juros: document.getElementById("juros").value,
+        desconto: document.getElementById("desconto").value
+    };
+
+    fetch('../controller/cReceber.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(conta)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert("Conta cadastrada com sucesso!");
+            carregarContas();
+        } else {
+            alert("Erro ao cadastrar conta.");
+        }
+    });
+}
+</script>
+
+</body>
+</html>
